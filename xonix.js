@@ -1,52 +1,50 @@
-function Xonix() {
+class Xonix {
 
-	var COL = width/scl - 1;
-	var LINE = height/scl - 1;
+	constructor() {
+		this.life = LIFE;
 
-	this.life = LIFE;
-	//this.score = 0;
-
-	//положение ксоникса на поле (строка-столбец)
-	this.col = COL;
-	this.line = LINE;
+		//положение ксоникса на поле (строка-столбец)
+		this.col = width/scl - 1;
+		this.line = height/scl - 1;
 
 
-	//скорость передвижение по строкам/столбцам
-	this.colSpeed = 1;
-	this.lineSpeed = 0;
+		//скорость передвижение по строкам/столбцам
+		this.colSpeed = 1;
+		this.lineSpeed = 0;
 
-	//массив клеток в которых был ксоникс при движении по морю
-	this.trace = [];
+		//массив клеток в которых был ксоникс при движении по морю
+		this.trace = [];
 
-	//параметры состояния
-	this.onTheSea = false;
-	this.justLeftTheSea = false;
-	this.isDead = false;
+		//параметры состояния
+		this.onTheSea = false;
+		this.justLeftTheSea = false;
+		this.isDead = false;
+	}
 
 
-	this.toDefault = function() {
-		this.col = COL;
-		this.line = LINE;
+	//используется при нажатии стрелок
+	dir(a, b) {
+		this.colSpeed = a;
+		this.lineSpeed = b;
+	}
+
+	toDefault() {
+		this.col = width/scl - 1;
+		this.line = height/scl - 1;
 		this.onTheSea = false;
 		this.trace.length = 0;
 
 		if (this.isDead == true) this.isDead = false;
 	}
 
-	//используется при нажатии стрелок
-	this.dir = function(a, b) {
-		this.colSpeed = a;
-		this.lineSpeed = b;
-	}
-
-	this.update = function(arr) {
+	update(arr) {
 		//обновляем положение
 		this.col = this.col + this.colSpeed;
 		this.line = this.line + this.lineSpeed;
 
 		//чтобы ксоникс не выходил за поле
-		this.col = constrain(this.col, 0, width/scl-1);
-		this.line = constrain(this.line, 0, height/scl-1);
+		if (this.col < 0 || this.col > width/scl - 1) this.col -= this.colSpeed;
+		if (this.line < 0 || this.line > height/scl - 1) this.line -= this.lineSpeed;
 
 
 		//обновляем параметры состояния
@@ -56,22 +54,22 @@ function Xonix() {
 		if (this.onTheSea == true && arr[this.line][this.col] == 0) this.justLeftTheSea = true;
 
 		//enemys_coord[0] - координаты врага на суше, последующие принадлежат врагам в море 
-		for (var i = 0; i < enemys_coord.length; i++) {
+		for (let i = 0; i < enemys_coord.length; i++) {
 			if ( abs(this.col - enemys_coord[i].col) <= 1 && abs(this.line - enemys_coord[i].line) <= 1 ) {
 				if ( (i == 0 && this.onTheSea == false) || (i > 0 && this.onTheSea == true) ) this.isDead = true;
 			}	
 		} 
 
 		//ксоникс погибает если враг в море коснулся следа
-		for (var i = 0; i < this.trace.length; i++) {
-			for (var j = 1; j < enemys_coord.length; j++) {
+		for (let i = 0; i < this.trace.length; i++) {
+			for (let j = 1; j < enemys_coord.length; j++) {
 				if ( abs(this.trace[i].col - enemys_coord[j].col) <= 1 && abs(this.trace[i].line - enemys_coord[j].line) <= 1 && this.justLeftTheSea == false) this.isDead = true;	
 			}
 		}
 
 		//ксоникс не может касаться своего следа
 		//меняем параметр justLeftTheSea, чтобы не сработало заполнение замкнутой области в функции grab
-		for (var i = 0; i < this.trace.length; i++) {
+		for (let i = 0; i < this.trace.length; i++) {
 			if (this.trace[i].col == this.col && this.trace[i].line == this.line) {
 				this.isDead = true;
 				this.justLeftTheSea = false;
@@ -83,12 +81,12 @@ function Xonix() {
 		this.draw();
 	}
 
-	this.draw = function() {
+	draw() {
 		strokeWeight(2);
 		strokeJoin(ROUND);
 
-		var fill_color = WHITE;
-		var stroke_color = PURPLE;
+		let fill_color = WHITE;
+		let stroke_color = PURPLE;
 
 		if (this.onTheSea == true && this.justLeftTheSea == false) {
 			fill_color = PURPLE;
@@ -101,7 +99,7 @@ function Xonix() {
 		rect(this.col*scl+1, this.line*scl+1, scl-2, scl-2);
 	}
 
-	this.grab = function(arr) {
+	grab(arr) {
 		//заливка замкнутых областей как только ксоникс покинет поле
 		if (this.justLeftTheSea == true) {
 			this.little_magic(arr);
@@ -123,7 +121,7 @@ function Xonix() {
 		});
 
 		//рисуем след без самого ксоникса
-		for (var i = 0; i < this.trace.length - 1; i++) {
+		for (let i = 0; i < this.trace.length - 1; i++) {
 			fill(PURPLE);
 			noStroke();
 			rect(this.trace[i].col*scl, this.trace[i].line*scl, scl, scl);
@@ -132,7 +130,7 @@ function Xonix() {
 
 		//если ксоникс умер во время движения по морю, следу надо вернуть единичные значения
 		if (this.isDead == true && this.life != 0) {
-			for (var i = 0; i < this.trace.length; i++) {
+			for (let i = 0; i < this.trace.length; i++) {
 				arr[this.trace[i].line][this.trace[i].col] = 1;
 			}
 			this.draw(); //иначе, след закрашивает ксоникса 
@@ -145,17 +143,17 @@ function Xonix() {
 	
 
 
-	this.little_magic = function(arr) {
-		var launch_point = {};
+	little_magic(arr) {
+		let launch_point = {};
 
-		for (var i = 1; i < enemys_coord.length; i++) {
+		for (let i = 1; i < enemys_coord.length; i++) {
 			launch_point = enemys_coord[i];
 			if (arr[launch_point.line][launch_point.col] == 2) continue;
 			this.filling_algorithm(launch_point, arr);
 		}
 
-		for (var j = indent; j < height/scl - indent; j++) {
-			for (var i = indent; i < width/scl - indent; i++) {
+		for (let j = indent; j < height/scl - indent; j++) {
+			for (let i = indent; i < width/scl - indent; i++) {
 				if (arr[j][i] == 2) arr[j][i] = 1;
 				else if (arr[j][i] == 1) arr[j][i] = 0;
 			}
@@ -164,15 +162,15 @@ function Xonix() {
 	}
 
 	
-	this.filling_algorithm = function(start, arr) {
-		var gen = [start];
-		var bufer = [];
-		var line, col;
+	filling_algorithm(start, arr) {
+		let gen = [start];
+		let bufer = [];
+		let line, col;
 
 
 		while (gen.length != 0) {
 			
-			for (var i = 0; i < gen.length; i++) {
+			for (let i = 0; i < gen.length; i++) {
 
 				line = gen[i].line;
 				col = gen[i].col;
@@ -207,6 +205,3 @@ function Xonix() {
 	}
 
 }
-
-
-
