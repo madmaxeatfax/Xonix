@@ -49,21 +49,21 @@ class Xonix {
 
 		//обновляем параметры состояния
 
-		//arr[..][..] == 0 - клетка суши arr[..][..] == 1 - клетка моря 
+		//arr[..][..] == 0 - клетка суши arr[..][..] == 1 - клетка моря
 		if (arr[this.line][this.col] == 1) this.onTheSea = true;
 		if (this.onTheSea == true && arr[this.line][this.col] == 0) this.justLeftTheSea = true;
 
-		//enemys_coord[0] - координаты врага на суше, последующие принадлежат врагам в море 
+		//enemys_coord[0] - координаты врага на суше, последующие принадлежат врагам в море
 		for (let i = 0; i < enemys_coord.length; i++) {
 			if ( abs(this.col - enemys_coord[i].col) <= 1 && abs(this.line - enemys_coord[i].line) <= 1 ) {
 				if ( (i == 0 && this.onTheSea == false) || (i > 0 && this.onTheSea == true) ) this.isDead = true;
-			}	
-		} 
+			}
+		}
 
 		//ксоникс погибает если враг в море коснулся следа
 		for (let i = 0; i < this.trace.length; i++) {
 			for (let j = 1; j < enemys_coord.length; j++) {
-				if ( abs(this.trace[i].col - enemys_coord[j].col) <= 1 && abs(this.trace[i].line - enemys_coord[j].line) <= 1 && this.justLeftTheSea == false) this.isDead = true;	
+				if ( abs(this.trace[i].col - enemys_coord[j].col) <= 1 && abs(this.trace[i].line - enemys_coord[j].line) <= 1 && this.justLeftTheSea == false) this.isDead = true;
 			}
 		}
 
@@ -73,7 +73,7 @@ class Xonix {
 			if (this.trace[i].col == this.col && this.trace[i].line == this.line) {
 				this.isDead = true;
 				this.justLeftTheSea = false;
-			}	
+			}
 		}
 
 
@@ -128,19 +128,20 @@ class Xonix {
 		}
 
 
-		//если ксоникс умер во время движения по морю, следу надо вернуть единичные значения
+		//если ксоникс умер во время движения по морю,
+		//следу надо вернуть единичные значения
 		if (this.isDead == true && this.life != 0) {
 			for (let i = 0; i < this.trace.length; i++) {
 				arr[this.trace[i].line][this.trace[i].col] = 1;
 			}
-			this.draw(); //иначе, след закрашивает ксоникса 
+			this.draw(); //иначе, след закрашивает ксоникса
 		}
 	}
 
 
 
 	//OPUS MAGNUM. Закрашивание полей.
-	
+
 
 
 	little_magic(arr) {
@@ -161,7 +162,7 @@ class Xonix {
 
 	}
 
-	
+
 	filling_algorithm(start, arr) {
 		let gen = [start];
 		let bufer = [];
@@ -169,7 +170,7 @@ class Xonix {
 
 
 		while (gen.length != 0) {
-			
+
 			for (let i = 0; i < gen.length; i++) {
 
 				line = gen[i].line;
