@@ -39,7 +39,7 @@ function draw() {
 	//дополнительные изменения, если потерял все жизни
 	if (xonix.life == 0) {
 		alert("You Screwed Up \nScore: " + xonix_score);
-		highscore_table.push(xonix_score);
+		//highscore_table.push(xonix_score);
 		xonix.life = LIFE;
 		xonix_score = 0;
 
@@ -107,6 +107,52 @@ function keyPressed() {
 		loop();
 		counter++;
 
-		timerId = setInterval(function() { seconds_left--; }, 1000);
+		timerId = setInterval(() => {seconds_left--;}, 1000);
 	}
 }
+
+//таймер
+let seconds_left = set_timer;
+let timerId = setInterval(() => {seconds_left--;}, 1000);
+
+let xonix_score = 0;
+function game_console() {
+	//if (seconds_left >= 77 && xonix.life == LIFE) showScores();
+
+	//нарисовать консоль
+	noStroke();
+	fill(BLACK);
+	rect(0, height, width, indent*scl);
+
+	//заполняем консоль
+	fill(WHITE);
+	textSize(2*scl);
+
+	//счет
+	xonix_score += floor( pow(field.xonix_grab, 2) );
+	if (field.xonix_grab < 8 && field.xonix_grab != 0) xonix_score += 30;
+	text("Score: " + xonix_score, 0.05 * width, height+17);
+
+	//количество жизней
+	text("Xn: " + xonix.life, 0.34 * width, height+17);
+
+	//процент захваченного поля
+	text("Full: " + field.complete_percent + "%", 0.52 * width, height+17);
+
+	//таймер
+	text("Time: " + seconds_left, 0.8 * width, height+17);
+}
+
+// let highscore_table = [];
+// function showScores() {
+// 	noStroke();
+// 	fill(BLUE);
+// 	textSize(1.5*scl);
+// 	text("Scores", 70*scl, 4*scl);
+
+// 	sort( highscore_table );
+// 	reverse ( highscore_table );
+// 	for (let i = 0; i < highscore_table.length; i++) {
+// 		text( highscore_table[i], 70*scl, 6*scl + i*2*scl);
+// 	}
+// }
