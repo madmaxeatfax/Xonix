@@ -9,8 +9,8 @@ class seaEnemy {
 
 	//arr[..][..] == 0 - клетка суши arr[..][..] == 1 - клетка моря
 	updateAndDraw(arr) {
-		if (arr[this.line + this.lineSpeed][this.col] == 0 
-			&& arr[this.line][this.col + this.colSpeed] == 0) {
+		if (arr[this.line + this.lineSpeed][this.col] == 0
+		&& arr[this.line][this.col + this.colSpeed] == 0) {
 			//внешний угол
 			this.lineSpeed = -this.lineSpeed;
 			this.colSpeed = -this.colSpeed;
@@ -20,8 +20,8 @@ class seaEnemy {
 		} else if (arr[this.line + this.lineSpeed][this.col] == 0) {
 			//нижняя или верхняя грань
 			this.lineSpeed = -this.lineSpeed;
-		} else if (arr[this.line + this.lineSpeed][this.col + this.colSpeed] == 0 
-			&& arr[this.line + this.lineSpeed][this.col] != 0 
+		} else if (arr[this.line + this.lineSpeed][this.col + this.colSpeed] == 0
+			&& arr[this.line + this.lineSpeed][this.col] != 0
 			&& arr[this.line][this.col + this.colSpeed] != 0) {
 			//внутренний угол
 			this.lineSpeed = -this.lineSpeed;
@@ -50,39 +50,39 @@ class landEnemy {
 		this.lineSpeed = 1;
 	}
 
+	//arr[..][..] == 0 - клетка суши arr[..][..] == 1 - клетка моря
 	updateAndDraw(arr) {
-
-		if ((this.col + this.colSpeed == width/scl 
-				|| this.col + this.colSpeed == -1) 
-			&& (this.line + this.lineSpeed == height/scl 
-			 	|| this.line + this.lineSpeed == -1)) {
+		if ((this.col + this.colSpeed == width/scl
+			|| this.col + this.colSpeed == -1)
+		&& (this.line + this.lineSpeed == height/scl
+			|| this.line + this.lineSpeed == -1)) {
 			//углы суши
 			this.colSpeed = -this.colSpeed;
 			this.lineSpeed = -this.lineSpeed;
-		} else if (this.col + this.colSpeed == width/scl 
+		} else if (this.col + this.colSpeed == width/scl
 			|| this.col + this.colSpeed == -1) {
 			//правый или левый край
 			this.colSpeed = -this.colSpeed;
-		} else if (this.line + this.lineSpeed == height/scl 
+		} else if (this.line + this.lineSpeed == height/scl
 			|| this.line + this.lineSpeed == -1) {
 			//верхний или нижний край
 			this.lineSpeed = -this.lineSpeed;
-		} else if (arr[this.line + this.lineSpeed][this.col + this.colSpeed] == 1 
-			&& arr[this.line][this.col + this.colSpeed] != 1 
+		} else if (arr[this.line + this.lineSpeed][this.col + this.colSpeed] == 1
+			&& arr[this.line][this.col + this.colSpeed] != 1
 			&& arr[this.line + this.lineSpeed][this.col] != 1) {
-			//угол моря
+			//внешний угол моря
 			this.lineSpeed = -this.lineSpeed;
 			this.colSpeed = -this.colSpeed;
-		} else if (arr[this.line + this.lineSpeed][this.col] == 1 
+		} else if (arr[this.line + this.lineSpeed][this.col] == 1
 			&& arr[this.line][this.col + this.colSpeed] == 1) {
-			//
+			//внутренний угол моря
 			this.lineSpeed = -this.lineSpeed;
 			this.colSpeed = -this.colSpeed;
 		} else if (arr[this.line + this.lineSpeed][this.col] == 1) {
-			//
+			//боковые стороны моря
 			this.lineSpeed = -this.lineSpeed;
 		} else if (arr[this.line][this.col + this.colSpeed] == 1) {
-			//
+			//верхняя или нижняя сторона моря
 			this.colSpeed = -this.colSpeed;
 		}
 
@@ -109,11 +109,8 @@ function makeEnemys() {
 	enemys_coord = [];
 
 	for (let i = 0; i < number_of_enemys; i++) {
-		if (i == 0) {
-			enemy[i] = new landEnemy();
-		} else {
-			enemy[i] = new seaEnemy();
-		}
+		if (i == 0) enemy[i] = new landEnemy();
+		else enemy[i] = new seaEnemy();
 
 		enemys_coord.push( {col: enemy[i].col, line: enemy[i].line} );
 	}
@@ -131,7 +128,8 @@ function updateEnemys(arr) {
 	//обрабатываем столкновения
 	for (let i = 1; i < number_of_enemys - 1; i++) {
 		for (let j = i + 1; j < number_of_enemys; j++) {
-			if ( abs(enemy[i].col - enemy[j].col) <= 1 && abs(enemy[i].line - enemy[j].line) <= 1) {
+			if ( Math.abs(enemy[i].col - enemy[j].col) <= 1
+			&& Math.abs(enemy[i].line - enemy[j].line) <= 1) {
 				enemy[i].colspeed = -enemy[i].colspeed;
 				enemy[j].lineSpeed = -enemy[j].lineSpeed;
 				enemy[j].colspeed = -enemy[j].colspeed;

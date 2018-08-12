@@ -13,7 +13,7 @@ const WHITE = '#cecaca';
 
 //инициализируем объекты
 let field, xonix, enemy;
-let enemys_coord;
+let enemys_coord, xonix_coord;
 
 function setup() {
 	createCanvas( 50*scl, (40 + indent)*scl );
@@ -21,7 +21,7 @@ function setup() {
 
 	field = new Field();
 	xonix = new Xonix();
-	makeEnemys();
+	makeEnemys(); //new seaEnemy() и new landEnemy()
 
 	frameRate(fps);
 	field.default();
@@ -38,10 +38,10 @@ function draw() {
 
 	//дополнительные изменения, если потерял все жизни
 	if (xonix.life == 0) {
-		alert("You Screwed Up \nScore: " + xonix_score);
+		alert("You Screwed Up \nScore: " + xonix.score);
 		//highscore_table.push(xonix_score);
 		xonix.life = LIFE;
-		xonix_score = 0;
+		xonix.score = 0;
 
 		field.default();
 		number_of_enemys = 3;
@@ -50,7 +50,7 @@ function draw() {
 
 	//переход на следующий уровень
 	if (field.complete_percent >= 75) {
-		xonix_score += 500;
+		xonix.score += 500;
 		xonix.life++;
 
 		xonix.toDefault();
@@ -67,10 +67,10 @@ function draw() {
 		xonix.isDead = true;
 	}
 
-	field.update();
+	field.update(enemys_coord, xonix_coord);
 	updateEnemys(field.array);
 	xonix.update(field.array);
-	if (xonix.onTheSea) xonix.grab(field.array);
+
 	game_console();
 }
 
@@ -115,7 +115,7 @@ function keyPressed() {
 let seconds_left = set_timer;
 let timerId = setInterval(() => {seconds_left--;}, 1000);
 
-let xonix_score = 0;
+
 function game_console() {
 	//if (seconds_left >= 77 && xonix.life == LIFE) showScores();
 
@@ -129,9 +129,7 @@ function game_console() {
 	textSize(2*scl);
 
 	//счет
-	xonix_score += floor( pow(field.xonix_grab, 2) );
-	if (field.xonix_grab < 8 && field.xonix_grab != 0) xonix_score += 30;
-	text("Score: " + xonix_score, 0.05 * width, height+17);
+	text("Score: " + xonix.score, 0.05 * width, height+17);
 
 	//количество жизней
 	text("Xn: " + xonix.life, 0.34 * width, height+17);

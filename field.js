@@ -1,18 +1,16 @@
-let previous_percent = 0;
-
 class Field {
 
 	constructor() {
 	 	this.complete_percent = 0;
-	 	this.xonix_grab;
 		this.array = [];
 	}
-	//1 - море, 0 - суша
+  // 1 - море, 0 - суша
 
 	default() {
-		const last_line = height/scl - 1;
-		const last_col = width/scl - 1;
+		const last_line = height/scl-1;
+		const last_col = width/scl-1;
 
+		this.complete_percent = 0;
 		this.array.length = 0;
 		for (let j = 0; j < height/scl; j++) {
 			this.array[j] = [];
@@ -33,29 +31,44 @@ class Field {
 	}
 
 
-	update() {
-		let sum = 0;
+	update(enemys_ceils, xonix_ceils) {
+		let ceils = enemys_ceils.concat(xonix_ceils);
 
-		for (let j = 0; j < height/scl; j++) {
-			for (let i = 0; i < width/scl; i++) {
-				if (this.array[j][i] == 1) {
-					noStroke();
-					fill(BLACK);
-					rect(i*scl, j*scl, scl, scl);
-
-					sum += 1;
-				} else {
-					noStroke();
-					fill(BLUE);
-					rect(i*scl, j*scl, scl, scl);
-				}
+		ceils.forEach((ceil) => {
+			if (this.array[ceil.line][ceil.col] == 1) {
+				noStroke();
+				fill(BLACK);
+				rect(ceil.col*scl, ceil.line*scl, scl, scl);
+			} else {
+				noStroke();
+				fill(BLUE);
+				rect(ceil.col*scl, ceil.line*scl, scl, scl);
 			}
-		}
+		});
 
-		//***переделать без использования объекта ксоникса
-		previous_percent = this.complete_percent;
-		this.complete_percent = floor( 100 - ( (sum + xonix.trace.length) * 100) /( (width/scl - 2*indent) * (height/scl - 2*indent) ) );
-		if (previous_percent > this.complete_percent) this.xonix_grab = 0;
-		else this.xonix_grab = this.complete_percent - previous_percent;
+		if (xonix_ceils.length > 1) {
+			let sea_fullsquare = (width/scl - 2*indent) * (height/scl - 2*indent);
+			let sea_grabsquare = xonix_ceils.length - 1;
+			this.complete_percent += Math.floor( (sea_grabsquare/sea_fullsquare) * 100 );
+		}
+		// let sea_square = 0;
+		//
+		// for (let j = 0; j < height/scl; j++) {
+		// 	for (let i = 0; i < width/scl; i++) {
+		// 		if (this.array[j][i] == 1) {
+		// 			noStroke();
+		// 			fill(BLACK);
+		// 			rect(i*scl, j*scl, scl, scl);
+		//
+		// 			sea_square += 1;
+		// 		} else {
+		// 			noStroke();
+		// 			fill(BLUE);
+		// 			rect(i*scl, j*scl, scl, scl);
+		// 		}
+		// 	}
+		// }
+		//
+		// this.complete_percent = Math.floor( (1 - sea_square/this.sea_fullsquare) * 100 );
 	}
 }
