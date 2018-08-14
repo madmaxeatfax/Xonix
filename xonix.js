@@ -99,8 +99,8 @@ class Xonix {
 	}
 
 	draw() {
-		strokeWeight(2);
-		strokeJoin(ROUND);
+		ctx.lineWidth = 3;
+		ctx.lineJoin = 'round';
 
 		let fill_color = WHITE;
 		let stroke_color = PURPLE;
@@ -110,10 +110,13 @@ class Xonix {
 			stroke_color = WHITE;
 		}
 
-		stroke(stroke_color);
-		fill(fill_color);
+		ctx.strokeStyle = stroke_color;
+		ctx.fillStyle = fill_color;
+		ctx.beginPath();
 		//аргументы rect такие, чтобы ксоникс не вылезал из клетки
-		rect(this.col*scl+1, this.line*scl+1, scl-2, scl-2);
+		ctx.rect(this.col*scl+1.5, this.line*scl+1.5, scl-3, scl-3);
+		ctx.stroke();
+		ctx.fill();
 	}
 
 	grab(arr) {
@@ -138,11 +141,15 @@ class Xonix {
 		});
 
 		//рисуем след без самого ксоникса
-		for (let i = 0; i < this.trace.length - 1; i++) {
-			fill(PURPLE);
-			noStroke();
-			rect(this.trace[i].col*scl, this.trace[i].line*scl, scl, scl);
+		let len = this.trace.length;
+		if (len >= 2) {
+			let col = this.trace[len-2].col;
+			let line = this.trace[len-2].line;
+
+			ctx.fillStyle = PURPLE;
+			ctx.fillRect(col*scl, line*scl, scl, scl);
 		}
+
 
 
 		//если ксоникс умер во время движения по морю,
@@ -150,9 +157,8 @@ class Xonix {
 		if (this.isDead == true && this.life > 1) {
 			for (let i = 0; i < this.trace.length; i++) {
 				arr[this.trace[i].line][this.trace[i].col] = 1;
-				noStroke();
-				fill(BLACK);
-				rect(this.trace[i].col*scl, this.trace[i].line*scl, scl, scl);
+				ctx.fillStyle = BLACK;
+				ctx.fillRect(this.trace[i].col*scl, this.trace[i].line*scl, scl, scl);
 			}
 		}
 	}
@@ -165,14 +171,13 @@ class Xonix {
 
 	little_magic(arr) {
 		let launch_point = {}
-		let sum = 0;
-
 		for (let i = 1; i < enemys_coord.length; i++) {
 			launch_point = enemys_coord[i];
 			if (arr[launch_point.line][launch_point.col] == 2) continue;
 			this.filling_algorithm(launch_point, arr);
 		}
 
+		let sum = 0;
 		for (let j = indent; j < height/scl - indent; j++) {
 			for (let i = indent; i < width/scl - indent; i++) {
 				if (arr[j][i] == 2) arr[j][i] = 1;
@@ -189,7 +194,7 @@ class Xonix {
 	}
 
 	make_score(sum) {
-		this.score += Math.floor( Math.pow(sum, 6/5) );
+		this.score += Math.floor( Math.pow(sum, 1.15) );
 	}
 
 	filling_algorithm(start, arr) {

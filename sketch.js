@@ -4,6 +4,8 @@ const indent = 2;
 const fps = 20;
 const set_timer = 80;
 const LIFE = 3;
+const width = 50*scl;
+const height = 40*scl;
 
 //цветовая палитра
 const BLACK = '#000000';
@@ -12,18 +14,20 @@ const PURPLE = '#a236ad';
 const WHITE = '#cecaca';
 
 //инициализируем объекты
-let field, xonix, enemy;
+let field, xonix, enemy, ctx;
+//здесь хранятся клетки для обновления на очередном шаге
 let enemys_coord, xonix_coord;
 
 function setup() {
-	createCanvas( 50*scl, (40 + indent)*scl );
-	height = 40*scl; //отводим место под консоль
+	let canvas = document.getElementById('canvas');
+	canvas.width = width;
+	canvas.height = height + indent*scl;
+	ctx = canvas.getContext('2d');
 
 	field = new Field();
 	xonix = new Xonix();
 	makeEnemys(); //new seaEnemy() и new landEnemy()
 
-	frameRate(fps);
 	field.default();
 }
 
@@ -74,71 +78,69 @@ function draw() {
 	game_console();
 }
 
+setup();
+let animation = setInterval(draw, 1000/fps);
+
 
 let counter = 0;
-function keyPressed() {
+window.addEventListener('keydown', event => {
 	//console.log(keyCode);
-	if (keyCode === UP_ARROW) {
-
+	if (event.code === 'ArrowUp') {
 		if (xonix.onTheSea && xonix.lineSpeed == 1) return;
 		xonix.dir(0, -1);
 
-	} else if (keyCode === DOWN_ARROW) {
-
+	} else if (event.code === 'ArrowDown') {
 		if (xonix.onTheSea && xonix.lineSpeed == -1) return;
 		xonix.dir(0, 1);
 
-	} else if (keyCode === RIGHT_ARROW) {
-
+	} else if (event.code === 'ArrowRight') {
 		if (xonix.onTheSea && xonix.colSpeed == -1) return;
 		xonix.dir(1, 0);
 
-	} else if (keyCode === LEFT_ARROW) {
-
+	} else if (event.code === 'ArrowLeft') {
 		if (xonix.onTheSea && xonix.colSpeed == 1) return;
 		xonix.dir(-1, 0);
 
-	} else if (keyCode == 32 && counter%2 == 0) {
-		noLoop();
+	} else if (event.code == 'Space' && counter%2 == 0) {
 		counter++;
 
-		clearInterval(timerId);
-	} else if (keyCode == 32 && counter%2 != 0) {
-		loop();
+		clearInterval(animation);
+		clearInterval(timer);
+	} else if (event.code == 'Space' && counter%2 != 0) {
 		counter++;
 
-		timerId = setInterval(() => {seconds_left--;}, 1000);
+		animation = setInterval(draw, 1000/fps);
+		timer = setInterval(() => {seconds_left--;}, 1000);
 	}
-}
+});
 
 //таймер
 let seconds_left = set_timer;
-let timerId = setInterval(() => {seconds_left--;}, 1000);
+let timer = setInterval(() => {seconds_left--;}, 1000);
 
 
 function game_console() {
 	//if (seconds_left >= 77 && xonix.life == LIFE) showScores();
 
 	//нарисовать консоль
-	noStroke();
-	fill(BLACK);
-	rect(0, height, width, indent*scl);
+	ctx.fillStyle = BLACK;
+	ctx.fillRect(0, height, width, indent*scl);
 
 	//заполняем консоль
-	fill(WHITE);
-	textSize(2*scl);
+	ctx.fillStyle = WHITE;
+	ctx.font = '20px Arial';
 
 	//счет
-	text("Score: " + xonix.score, 0.05 * width, height+17);
+	ctx.fillText("Score: " + xonix.score, 0.05 * width, height+17);
 
 	//количество жизней
-	text("Xn: " + xonix.life, 0.34 * width, height+17);
+	ctx.fillText("Xn: " + xonix.life, 0.34 * width, height+17);
 
 	//процент захваченного поля
-	text("Full: " + field.complete_percent + "%", 0.52 * width, height+17);
+	ctx.fillText("Full: " + field.complete_percent + "%", 0.52 * width, height+17);
 
 	//таймер
-	text("Time: " + seconds_left, 0.8 * width, height+17);
+	ctx.fillText("Time: " + seconds_left, 0.8 * width, height+17);
 }
 
 // let highscore_table = [];

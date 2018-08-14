@@ -33,10 +33,15 @@ class seaEnemy {
 
 		let xc = (this.col + this.col + 1)/2;
 		let yc = (this.line + this.line + 1)/2;
-		strokeWeight(2);
-		stroke(WHITE);
-		fill(BLUE);
-		ellipse(xc*scl, yc*scl, scl-2);
+
+
+		ctx.lineWidth = 3;
+		ctx.strokeStyle = WHITE;
+		ctx.fillStyle = BLUE;
+		ctx.beginPath();
+		ctx.arc(xc*scl, yc*scl, (scl-3)/2, 0, 2*Math.PI);
+		ctx.stroke();
+		ctx.fill();
 	}
 
 }
@@ -90,11 +95,14 @@ class landEnemy {
 		this.col += this.colSpeed;
 		this.line += this.lineSpeed;
 
-		strokeWeight(2);
-		strokeJoin(ROUND);
-		stroke(BLACK);
-		fill(BLUE);
-		rect(this.col*scl+1, this.line*scl+1, scl-2, scl-2);
+		ctx.lineWidth = 3;
+		ctx.lineJoin = 'round';
+		ctx.strokeStyle = BLACK;
+		ctx.fillStyle = BLUE;
+		ctx.beginPath();
+		ctx.rect(this.col*scl+1.5, this.line*scl+1.5, scl-3, scl-3);
+		ctx.stroke();
+		ctx.fill();
 	}
 
 	toDefault() {

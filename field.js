@@ -17,14 +17,14 @@ class Field {
 			for (let i = 0; i < width/scl; i++) {
 				if (i >= indent && j >= indent && i <= last_col - indent && j <= last_line - indent)  {
 					this.array[j][i] = 1;
-					noStroke();
-					fill(BLACK);
-					rect(i*scl, j*scl, scl, scl);
+
+					ctx.fillStyle = BLACK;
+					ctx.fillRect(i*scl, j*scl, scl, scl);
 				} else {
 					this.array[j][i] = 0;
-					noStroke();
-					fill(BLUE);
-					rect(i*scl, j*scl, scl, scl);
+
+					ctx.fillStyle = BLUE;
+					ctx.fillRect(i*scl, j*scl, scl, scl);
 				}
 			}
 		}
@@ -32,17 +32,15 @@ class Field {
 
 
 	update(enemys_ceils, xonix_ceils) {
-		let ceils = enemys_ceils.concat(xonix_ceils);
+		let ceils = [...enemys_ceils, ...xonix_ceils];
 
 		ceils.forEach((ceil) => {
 			if (this.array[ceil.line][ceil.col] == 1) {
-				noStroke();
-				fill(BLACK);
-				rect(ceil.col*scl, ceil.line*scl, scl, scl);
+				ctx.fillStyle = BLACK;
+				ctx.fillRect(ceil.col*scl, ceil.line*scl, scl, scl);
 			} else {
-				noStroke();
-				fill(BLUE);
-				rect(ceil.col*scl, ceil.line*scl, scl, scl);
+				ctx.fillStyle = BLUE;
+				ctx.fillRect(ceil.col*scl, ceil.line*scl, scl, scl);
 			}
 		});
 
@@ -51,24 +49,6 @@ class Field {
 			let sea_grabsquare = xonix_ceils.length - 1;
 			this.complete_percent += Math.floor( (sea_grabsquare/sea_fullsquare) * 100 );
 		}
-		// let sea_square = 0;
-		//
-		// for (let j = 0; j < height/scl; j++) {
-		// 	for (let i = 0; i < width/scl; i++) {
-		// 		if (this.array[j][i] == 1) {
-		// 			noStroke();
-		// 			fill(BLACK);
-		// 			rect(i*scl, j*scl, scl, scl);
-		//
-		// 			sea_square += 1;
-		// 		} else {
-		// 			noStroke();
-		// 			fill(BLUE);
-		// 			rect(i*scl, j*scl, scl, scl);
-		// 		}
-		// 	}
-		// }
-		//
-		// this.complete_percent = Math.floor( (1 - sea_square/this.sea_fullsquare) * 100 );
+
 	}
 }
