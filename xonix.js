@@ -99,7 +99,7 @@ class Xonix {
 	}
 
 	draw() {
-		ctx.lineWidth = 3;
+		ctx.lineWidth = 4;
 		ctx.lineJoin = 'round';
 
 		let fill_color = WHITE;
@@ -114,7 +114,7 @@ class Xonix {
 		ctx.fillStyle = fill_color;
 		ctx.beginPath();
 		//аргументы rect такие, чтобы ксоникс не вылезал из клетки
-		ctx.rect(this.col*scl+1.5, this.line*scl+1.5, scl-3, scl-3);
+		ctx.rect(this.col*scl+2, this.line*scl+2, scl-4, scl-4);
 		ctx.stroke();
 		ctx.fill();
 	}
